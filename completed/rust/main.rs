@@ -1,4 +1,4 @@
-fn main(){								// If you implement everything correctly, this should learn the xor function and output something close to 0.0 1.0 1.0 0.0 for these inputs
+fn main(){
 	let input=Value::from_data([0.0,0.0, 0.0,1.0, 1.0,0.0, 1.0,1.0],[4,2]);
 	let lr=0.01;
 	let mut cache=Some(Vec::new());
@@ -17,18 +17,26 @@ fn main(){								// If you implement everything correctly, this should learn th
 }
 impl Layer for NN{
 	fn backward(&mut self,cache:&mut Vec<Value>,outputgrad:Vec<Value>)->Vec<Value>{
-		todo!()							//TODO call backward on each layer in reverse order
+		let g=self.l1.backward(cache,outputgrad);
+		let g=self.a.backward(cache,g);
+		let g=self.l0.backward(cache,g);
+		g
 	}
 	fn forward(&self,cache:&mut Option<Vec<Value>>,input:Vec<Value>)->Vec<Value>{
-		todo!()							//TODO call forward on each layer
+		let x=self.l0.forward(cache,input);
+		let x=self.a.forward(cache,x);
+		let x=self.l1.forward(cache,x);
+		x
 	}
 	fn opt_step(&mut self,f:&mut dyn FnMut(Value,Value)->(Value,Value)){
-		todo!()							//TODO call opt_step on each layer
+		self.a.opt_step(f);
+		self.l0.opt_step(f);
+		self.l1.opt_step(f);
 	}
 }
 impl NN{
 	fn new(inputdim:usize,intermediatedim:usize,outputdim:usize)->Self{
-		todo!()							//TODO initialize the layers
+		Self{a:Tanh::new(),l0:Linear::new(true,inputdim,intermediatedim),l1:Linear::new(false,intermediatedim,outputdim)}
 	}
 }
 #[derive(Clone,Debug)]
