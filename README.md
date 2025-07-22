@@ -4,6 +4,7 @@ Part of a potentially serial tutorial on building portions of neural networks fr
 
 # TODOS
 improve python version
-translate starter version of code into python
+
 possibly add more languages
+
 clearer/more comments
